@@ -75,7 +75,7 @@ def search_with_serpapi(query):
     params = {
         "engine": "google",
         "q": query,
-        "api_key": "60279de55f11318417ecc2f6e50dff8522eaa72c39d39341572ae2e1e6081722"
+        "api_key": serp_api_key
     }
 
     search = GoogleSearch(params)
