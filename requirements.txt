@@ -1,5 +1,4 @@
-# Run this command to upgrade pip before installing other packages:
-# /home/adminuser/venv/bin/python -m pip install --upgrade pip
+/home/adminuser/venv/bin/python -m pip install --upgrade pip
 
 beautifulsoup4==4.8.2
 fpdf==1.7.2
