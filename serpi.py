@@ -155,10 +155,9 @@ def main():
 
         # Display research report
         st.header("Research Report")
-        st.write(research_report, unsafe_allow_html=True )
-
-        if st.button("Export to PDF"):
-           export_to_pdf(research_report)
+        st.markdown(research_report, unsafe_allow_html=True )
+        
+        st.download_button(label="Export to PDF", data=[export_to_pdf(research_report)], file_name="report.pdf", mime="application/pdf", key=None, help=None, on_click=None, args=None, kwargs=None)
 
 if __name__ == "__main__":
     main()
