@@ -106,11 +106,12 @@ def extract_body_text(url):
 
 # Function to export report to PDF
 def export_to_pdf(report):
-   pdf = FPDF()
-   pdf.add_page()
-   pdf.set_font("Arial", size=12)
-   pdf.multi_cell(0, 10, report)
-   pdf.output("report.pdf")
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, report)
+    pdf_data = pdf.output(dest='S').encode('latin-1')
+    return pdf_data
 
 
 # Streamlit app
@@ -119,17 +120,17 @@ def main():
 
     # User input text
     prompt = ""
-    user_input = st.text_input("Why search Google and then dig through a bunch of websites for the information you want? Enter what you're interested in knowing belkow and let your Peronsal Search AI take care of the rest!")
+    user_input = st.text_input("Why search Google and then dig through a bunch of websites for the information you want? Enter what you're interested in knowing below and let your Personal Search AI take care of the rest!")
     user_input = user_input
     # Search button
     if st.button("Search"):
-        
+
         # Send user input text as a prompt the prompt improver to make it more suitable for GPT-4
         improved_prompt = prompt_improver(user_input)
-        
+
         # Send improved prompt to chat completion endpoint to get a query
         query = chat_completion(improved_prompt)
-        
+
         # Use SERP API and Google to search using the response
         top_urls = search_with_serpapi(query)
 
@@ -149,11 +150,13 @@ def main():
 
         # Display research report
         st.header("Research Report")
-        st.markdown(research_report, unsafe_allow_html=True )
-        
-        pdf_data_export = export_to_pdf(research_report)
-        
-        st.download_button(label="Export to PDF", data=pdf_data_export, file_name="report.pdf", mime="application/pdf")
+        st.markdown(research_report, unsafe_allow_html=True)
+
+        # Export report to PDF
+        pdf_data = export_to_pdf(research_report)
+
+        # Download PDF button
+        st.download_button(label="Download PDF", data=pdf_data, file_name="report.pdf", mime="application/pdf")
 
 if __name__ == "__main__":
     main()
