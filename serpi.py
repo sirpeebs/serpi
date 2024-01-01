@@ -8,7 +8,7 @@ from fpdf import FPDF
 import os
 from datetime import datetime
 
-timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+report_name = "pdf_report.pdf"
 
 serp_api_key = os.environ.get('serp_api_key')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
@@ -113,8 +113,8 @@ def export_to_pdf(report):
     pdf.add_page()
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, report)
-    report_name = "pdf_report_"+timestamp+".pdf"
-    pdf.output(dest='./', name=report_name).encode('latin-1')
+    
+    pdf.output(dest='~/', name=report_name).encode('latin-1')
     return report_name
 
 
@@ -158,10 +158,24 @@ def main():
         st.markdown(research_report, unsafe_allow_html=True)
 
         # Export report to PDF
-        report_name = export_to_pdf(research_report)
-        file = str("./"+report_name)
+
+        file = ""
         # Download PDF button
-        st.download_button(label="Download PDF", data=file, file_name=report_name, mime="application/pdf")
+        st.download_button(label="Download PDF", data='~/pdf_report.pdf', file_name=report_name, mime="application/pdf")
+
+
+
+        # Path to the file in the home directory
+        file_path = os.path.expanduser('~/pdf_report.pdf')
+
+        # Read the file content
+        with open(file_path, "rb") as file:
+            btn = st.download_button(
+                label="Download PDF Report",
+                data=file,
+                file_name="pdf_report.pdf",
+                mime="application/pdf"
+             )
 
 if __name__ == "__main__":
     main()
