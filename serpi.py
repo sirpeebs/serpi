@@ -4,7 +4,11 @@ import requests
 from openai import OpenAI
 from serpapi.google_search import GoogleSearch
 from readability.readability import Document
+from fpdf import FPDF
+import os
 
+serp_api_key = os.environ.get('serp_api_key')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 client = OpenAI()
 
 
@@ -106,14 +110,22 @@ def extract_body_text(url):
     except Exception as e:
         return str(e)
 
+# Function to export report to PDF
+def export_to_pdf(report):
+   pdf = FPDF()
+   pdf.add_page()
+   pdf.set_font("Arial", size=12)
+   pdf.multi_cell(0, 10, report)
+   pdf.output("report.pdf")
+
 
 # Streamlit app
 def main():
-    st.title("Personal Search Assistant")
+    st.title("Search Assistant")
 
     # User input text
     prompt = ""
-    user_input = st.text_input("Enter your search query")
+    user_input = st.text_input("Why search Google and then dig through a bunch of websites for the information you want? Enter what you're interested in knowing belkow and let your Peronsal Search AI take care of the rest!")
     user_input = user_input
     # Search button
     if st.button("Search"):
@@ -145,6 +157,8 @@ def main():
         st.header("Research Report")
         st.write(research_report, unsafe_allow_html=True )
 
+        if st.button("Export to PDF"):
+           export_to_pdf(research_report)
 
 if __name__ == "__main__":
     main()
