@@ -121,7 +121,7 @@ def export_to_pdf(report):
 
 # Streamlit app
 def main():
-    st.title("Search Assistant")
+    st.title("AI Search Assistant")
 
     # User input text
     prompt = ""
