@@ -151,7 +151,9 @@ def main():
         st.header("Research Report")
         st.markdown(research_report, unsafe_allow_html=True )
         
-        st.download_button(label="Export to PDF", data=[export_to_pdf(research_report)], file_name="report.pdf", mime="application/pdf")
+        pdf_data_export = export_to_pdf(research_report)
+        
+        st.download_button(label="Export to PDF", data=pdf_data_export, file_name="report.pdf", mime="application/pdf")
 
 if __name__ == "__main__":
     main()
