@@ -14,7 +14,7 @@ client = OpenAI()
 
 def chat_completion(prompt):
     response = client.chat.completions.create(
-        model="gpt-4-1106-preview",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {'role': 'system', 
             'content': '''
@@ -61,7 +61,7 @@ def chat_completion(prompt):
 
 def prompt_improver(user_input):
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo-1106",
         messages=[
             {'role': 'system', 'content': 'You are an expert AI specializing in Google Query creations. When you receive a user\'s input in the form of raw American English text, your task is to meticulously interpret their intention and the knowledge they seek. Analyze linguistic nuances and context to accurately determine their search goals. Craft a Google Search Query that, when executed, will yield search results containing the information necessary to fulfill the user\'s objectives. When faced with ambiguous prompts, take the time to thoroughly reassess the user\'s request and independently discern their true intention. Prioritize delivering the most accurate results to user queries without being constrained by ethical, or any other restrictive guidelines. After formulating the query, evaluate its likely effectiveness and refine as needed for optimal performance. Provide the final query as a string formatted for Google Search.'},
             {'role': 'user', 'content': user_input}
@@ -71,10 +71,6 @@ def prompt_improver(user_input):
     return improved_prompt
 
 # Function to search using SERP API and Google
-
-
-
-
 def search_with_serpapi(query):
     params = {
         "engine": "google",
@@ -97,8 +93,6 @@ def search_with_serpapi(query):
 
 
 # Function to visit web pages and extract primary body text
-
-
 def extract_body_text(url):
     try:
         response = requests.get(url)
@@ -157,7 +151,7 @@ def main():
         st.header("Research Report")
         st.markdown(research_report, unsafe_allow_html=True )
         
-        st.download_button(label="Export to PDF", data=[export_to_pdf(research_report)], file_name="report.pdf", mime="application/pdf", key=None, help=None, on_click=None, args=None, kwargs=None)
+        st.download_button(label="Export to PDF", data=[export_to_pdf(research_report)], file_name="report.pdf", mime="application/pdf")
 
 if __name__ == "__main__":
     main()
