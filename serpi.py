@@ -95,15 +95,14 @@ def extract_body_text(url):
     except Exception as e:
         return str(e)
 
-# # Function to export report to PDF
-# def export_to_pdf(formatted_research_report):
-#     pdf = FPDF()
-#     pdf.add_page()
-#     pdf.set_font("Arial", size=12)
-#     pdf.multi_cell(0, 10, formatted_research_report)
-    
-#     pdf.output(dest='/var/www/html/', name='new_pdf_report.pdf').encode('latin-1')
-#     return report_name
+def export_to_pdf(formatted_research_report):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, formatted_research_report)
+    pdf.output(dest='/var/www/html/new_pdf_report.pdf', name='F')
+
+
 
 def format_research_report(research_report):
     formatted_research_report = f'''
@@ -125,17 +124,9 @@ def format_research_report(research_report):
     </body>
     </html>
     '''
-    
-    def save_pdf_report():
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial", size=12)
-        pdf.multi_cell(0, 10, formatted_research_report)
-        pdf.output(dest='/var/www/html/new_pdf_report.pdf', name='F')
-    
-    save_pdf_report()
-    
+      
     return formatted_research_report
+
 # Streamlit app
 def main():
     
@@ -171,17 +162,11 @@ def main():
         research_report = report_writer(bundled_text)
 
         formatted_research_report = format_research_report(research_report)
+        export_to_pdf(formatted_research_report)
         # export_to_pdf(formatted_research_report)
         # Display research report
         st.header("Research Report")
         st.markdown(formatted_research_report, unsafe_allow_html=True)
-
-    
-        # Path to the file in the home directory
-        def get_base64_encoded_pdf(file_path):
-            with open(file_path, "rb") as file:
-                encoded_pdf = base64.b64encode(file.read()).decode("utf-8")
-            return encoded_pdf
 
         file_path = '/var/www/html/new_pdf_report.pdf'
         # encoded_pdf = get_base64_encoded_pdf(file_path)
