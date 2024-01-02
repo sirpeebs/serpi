@@ -15,7 +15,7 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 client = OpenAI()
 
 
-def chat_completion(prompt):
+def report_writer(prompt):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo-16k",
         messages=[
@@ -38,16 +38,15 @@ def chat_completion(prompt):
                                                     Source: <a href="https://www.source-url.com" class="text-blue-500 hover:text-blue-700" target="_blank">Source Name</a>
                                                 </div>
 
-
-                            Use these guidelines, and your own judgement, to create a report that is as comprehensive and accurate as possible.
-                            
+                            Use these guidelines, 
             '''},
             {'role': 'user', 'content': prompt}
         ]
     )
 
-    query = response.choices[0].message.content
-    return query
+    report= response.choices[0].message.content
+    
+    return report 
 
 
 def prompt_improver(user_input):
@@ -143,10 +142,10 @@ def main():
         improved_prompt = prompt_improver(user_input)
 
         # Send improved prompt to chat completion endpoint to get a query
-        query = chat_completion(improved_prompt)
+        # query = report_writer(improved_prompt)
 
         # Use SERP API and Google to search using the response
-        top_urls = search_with_serpapi(query)
+        top_urls = search_with_serpapi(improved_prompt)
 
         # Visit web pages and extract primary body text
         body_texts = []
@@ -159,8 +158,7 @@ def main():
 
         # Send bundled text as a prompt to OpenAI chat completions endpoint with GPT-4 model
         system_prompt = "You are an advanced AI that receives bundled web page data and a user's request for knowledge and compile a report based on this information to satisfy that knowledge need."
-        research_report = chat_completion(
-            system_prompt + "\n\n" + bundled_text)
+        research_report = report_writer(bundled_text)
 
         formatted_research_report = format_research_report(research_report)
 
@@ -172,8 +170,7 @@ def main():
 
         file = ""
         # Download PDF button
-        st.download_button(label="Download PDF", data='~/pdf_report.pdf', file_name=report_name, mime="application/pdf")
-
+       
 
 
         # Path to the file in the home directory
@@ -183,7 +180,7 @@ def main():
         with open(file_path, "rb") as file:
             btn = st.download_button(
                 label="Download PDF Report",
-                data=file,
+                data=file_path,
                 file_name="pdf_report.pdf",
                 mime="application/pdf"
              )
