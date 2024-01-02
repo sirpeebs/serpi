@@ -181,12 +181,10 @@ def main():
             return encoded_pdf
 
         file_path = '/var/www/html/new_pdf_report.pdf'
-        encoded_pdf = get_base64_encoded_pdf(file_path)
+        # encoded_pdf = get_base64_encoded_pdf(file_path)
 
-        # Display the button
-        if st.button("Download PDF Report"):
-            href = f'<a href="data:application/pdf;base64,{encoded_pdf}" download="pdf_report.pdf">Click here to download the PDF report</a>'
-            st.markdown(href, unsafe_allow_html=True)
+        st.download_button(label="Export to PDF", data=file_path, file_name="report.pdf", mime="application/pdf")
+        
 
 if __name__ == "__main__":
     main()
