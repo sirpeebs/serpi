@@ -15,38 +15,51 @@ OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 client = OpenAI()
 
 
-def report_writer(prompt):
+def chat_completion(prompt):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo-16k",
         messages=[
             {'role': 'system', 
             'content': '''
-                            
-                            You are an advanced AI Agent tasked with synthesizing a highly accurate and comprehensive report. Using the user's initial request bundled in the user's prompt, cretae a report to best meet the user's goals.
-                            
-                            Do this by reviewing the web page text available in the user's prompt, in conjunction with your model's existing knowledge. Include citations or reference with links to the source URL for all information associated wtih any site content obtained through the bundled web content within teh user's prompt. 
-                            
-                            Double check your writing, ensuring that it is factually precise, relevant, and that you've cited your sources complete with URL. You will format your response to include a title, an overview summary paragraph statement and a list of points, and a list of sources - all delievered in HTML format. Each within their own div tags.
-                        
+                            You are an advanced AI tasked with synthesizing a highly accurate and comprehensive report. Analyze bundled web page data and the user's specific query to generate a response that is factually precise, relevant, and drawn from credible sources. Present this information in a structured, visually appealing format suitable for HTML display using Tailwind CSS, with clear citations for each piece of information.
 
-                            Example of Response Structure for listed points(this is for a single point, each point will require its own block like this):
-                            
-                            <strong>Point 1 Title:</strong>
+                            Example of Response Structure:
+
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+                            </head>
+                            <body class="bg-gray-100 flex items-center justify-center mt-12">
+                                <div class="w-2/3 bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
+                                    <div class="px-10 py-8">
+                                        <h1 class="text-4xl font-bold text-gray-800 mb-6">Title of the Report</h1>
+                                        <p class="text-gray-600 mb-8">Brief introduction or overview of the user's query.</p>
+                                        <ol class="list-decimal list-inside space-y-4 text-gray-600">
+                                            <li>
+                                                <strong>Point 1 Title:</strong>
                                                 <div class="list-item-content">
                                                     Accurate and relevant information addressing the user's query.
                                                     <br>
                                                     Source: <a href="https://www.source-url.com" class="text-blue-500 hover:text-blue-700" target="_blank">Source Name</a>
                                                 </div>
-
-                            Use these guidelines, 
+                                            </li>
+                                            <!-- Additional list items for other points -->
+                                        </ol>
+                                    </div>
+                                    <div class="bg-gray-200 px-10 py-4">
+                                        <p class="text-gray-600">Closing note or additional remarks.</p>
+                                    </div>
+                                </div>
+                            </body>
+                        </html>
             '''},
             {'role': 'user', 'content': prompt}
         ]
     )
 
-    research_report = response.choices[0].message.content
-    
-    return research_report 
+    query = response.choices[0].message.content
+    return query
 
 
 def prompt_improver(user_input):
@@ -104,28 +117,7 @@ def export_to_pdf(report):
     pdf.output(dest='~/', name=report_name).encode('latin-1')
     return report_name
 
-def format_research_report(research_report):
-    formatted_research_report = f'''
-    html = f
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Research Report</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css" integrity="sha512-4xM1Zj9Zk3+1QYJyJ4nZq6+g0QZ8g4Z2X7uQw2uWUZw5zYm5Gd4q3XQz8WQ6w9wqyNj7JQpZ3Z5Zy5GmY1t3Iw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    </head>
-    <body>
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold text-center">Research Report</h1>
-            <div class="mt-10">
-                {research_report}
-            </div>
-        </div>
-    </body>
-    </html>
-    '''
-    
-    return formatted_research_report
+
 # Streamlit app
 def main():
     
@@ -142,10 +134,10 @@ def main():
         improved_prompt = prompt_improver(user_input)
 
         # Send improved prompt to chat completion endpoint to get a query
-        # query = report_writer(improved_prompt)
+        query = chat_completion(improved_prompt)
 
         # Use SERP API and Google to search using the response
-        top_urls = search_with_serpapi(improved_prompt)
+        top_urls = search_with_serpapi(query)
 
         # Visit web pages and extract primary body text
         body_texts = []
@@ -158,29 +150,29 @@ def main():
 
         # Send bundled text as a prompt to OpenAI chat completions endpoint with GPT-4 model
         system_prompt = "You are an advanced AI that receives bundled web page data and a user's request for knowledge and compile a report based on this information to satisfy that knowledge need."
-        research_report = report_writer(bundled_text)
-
-        formatted_research_report = format_research_report(research_report)
+        research_report = chat_completion(
+            system_prompt + "\n\n" + bundled_text)
 
         # Display research report
         st.header("Research Report")
-        st.markdown(formatted_research_report, unsafe_allow_html=True)
+        st.markdown(research_report, unsafe_allow_html=True)
 
         # Export report to PDF
 
         file = ""
         # Download PDF button
-       
+        st.download_button(label="Download PDF", data='~/pdf_report.pdf', file_name=report_name, mime="application/pdf")
+
 
 
         # Path to the file in the home directory
-        file_path = os.path.expanduser('~/')
+        file_path = os.path.expanduser('~/pdf_report.pdf')
 
         # Read the file content
         with open(file_path, "rb") as file:
             btn = st.download_button(
                 label="Download PDF Report",
-                data=file_path,
+                data=file,
                 file_name="pdf_report.pdf",
                 mime="application/pdf"
              )
