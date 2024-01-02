@@ -18,7 +18,7 @@ client = OpenAI()
 
 def report_writer(prompt):
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo-16k",
+        model="gpt-4-1106-preview",
         messages=[
             {'role': 'system', 
             'content': '''
@@ -171,6 +171,8 @@ def main():
 
         # file = ""
         # Download PDF button
+       
+
 
         # Path to the file in the home directory
         def get_base64_encoded_pdf(file_path):
