@@ -44,9 +44,9 @@ def report_writer(prompt):
         ]
     )
 
-    report= response.choices[0].message.content
+    research_report = response.choices[0].message.content
     
-    return report 
+    return research_report 
 
 
 def prompt_improver(user_input):
