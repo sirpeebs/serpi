@@ -31,7 +31,7 @@ def chat_completion(prompt):
                             <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
                             </head>
                             <body class="bg-gray-100 flex items-center justify-center mt-12">
-                                <div class="w-2/3 bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
+                                <div class="w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">
                                     <div class="px-10 py-8">
                                         <h1 class="text-4xl font-bold text-gray-800 mb-6">Title of the Report</h1>
                                         <p class="text-gray-600 mb-8">Brief introduction or overview of the user's query.</p>
